@@ -1,26 +1,26 @@
 import requests
 import json
 import sqlite3
+import http.client, urllib.parse
 
 ACCESS_KEY = 'e833f1cc919ad792e91a2c2a803c3b3c'
 
 def create_news_database():
-
-    params = {
-        'access_key': 'ACCESS_KEY',
-        'categories': 'general,health',
+    conn = http.client.HTTPConnection('api.mediastack.com')
+    params = urllib.parse.urlencode({
+        'access_key': ACCESS_KEY,
+        'categories': 'general',
         'countries': 'us',
-        'keywords': 'virus,corona',
-        'date': '2021-01-24,2022-12-31'
-        }
+        'keywords': 'japan,-tourism,-travel',
+        'limit': 100
+        })
 
-    url = f'''https://api.mediastack.com/v1/news?
-        access_key=e833f1cc919ad792e91a2c2a803c3b3c&categories=general,health&countries=us&keywords=japan,tourism&limit=100&sort=popularity'''
+    conn.request('GET', '/v1/news?{}'.format(params))
 
-    response = requests.get(url)
-    news_dict = json.loads(response.content)
+    res = conn.getresponse()
+    data = res.read()
 
-    print(news_dict)
+    print(data.decode('utf-8'))
 
     pass
 
