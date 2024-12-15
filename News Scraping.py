@@ -13,14 +13,14 @@ def set_up_database(db_name):
     cur = conn.cursor()
     return cur, conn
 
-def create_news_dict():
+def create_news_dict(artist_name):
     conn = http.client.HTTPConnection('api.mediastack.com')
     params = urllib.parse.urlencode({
         'access_key': ACCESS_KEY,
-        'categories': 'general',
+        'categories': 'entertainment',
         'countries': 'us',
-        'keywords': 'cyclone',
-        'limit': 100,
+        'keywords': artist_name,
+        'limit': 20,
         'sort': 'popularity'
         })
 
@@ -39,12 +39,6 @@ def create_news_dict():
 def create_news_database(dict, cur, conn):
     news_data = dict['data']
 
-    cur.execute('''CREATE TABLE IF NOT EXISTS News
-                ( id INTEGER PRIMARY KEY,
-                name TEXT,
-                description TEXT,
-                date INTEGER )''')
-
     for article in news_data:
         publish_date = article['published_at']
         publish_date = (re.findall(r'\d{4}\-\d{2}\-\d{2}', publish_date))[0]
@@ -61,8 +55,21 @@ def create_news_database(dict, cur, conn):
     pass
 
 def main():
-    news_dict = create_news_dict()
+    jin_dict = create_news_dict('Jin')
+    chap_dict = create_news_dict('Chappell Roan')
+    billie_dict = create_news_dict('Linkin Park')
+    dict_list = [jin_dict, chap_dict, billie_dict]
     curr, con = set_up_database('main.db')
-    create_news_database(news_dict, curr, con)
 
+    #curr.execute("DROP TABLE News")
+
+    curr.execute('''CREATE TABLE IF NOT EXISTS News
+                ( id INTEGER PRIMARY KEY,
+                name TEXT,
+                description TEXT,
+                date INTEGER )''')
+    con.commit()
+    for dict in dict_list:
+        create_news_database(dict, curr, con)
+    con.close()
 main()
