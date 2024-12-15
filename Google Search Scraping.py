@@ -1,24 +1,40 @@
 import requests
 from bs4 import BeautifulSoup
 import sqlite3
-import sys
+import sys 
 sys.stdout.reconfigure(encoding='utf-8')
-dates = [20241025, 20241101, 20241108, 20241115, 20241122, 20241129, 20241206, 20241213]
+
+dates = [20240712, 20240719, 20240726, 20240802, 20240809, 20240816, 20240823,
+         20240830, 20240906, 20240913, 20240920, 20240927, 20241004, 20241011,
+         20241018, 20241025, 20241101, 20241108, 20241115, 20241122, 20241129,
+         20241206, 20241213]
+
 conn = sqlite3.connect('main.db')
 cursor = conn.cursor()
 
+#cursor.execute("DROP TABLE artists")
 #cursor.execute("DROP TABLE songs")
+
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS artists (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE,
+        num_songs INTEGER DEFAULT 0,
+        first_date TEXT DEFAULT NULL
+    )
+""")
 
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS songs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        artist TEXT NOT NULL,
-        song TEXT NOT NULL,
+        artist_id INTEGER NOT NULL,
+        song TEXT NOT NULL UNIQUE,
         date TEXT NOT NULL,
-        UNIQUE(song)
+        FOREIGN KEY (artist_id) REFERENCES artists (id)
     )
 """)
 conn.commit()
+
 i = 0
 for date in dates:
     if i >= 25:
@@ -29,7 +45,7 @@ for date in dates:
 
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, "html.parser")
-        rows = soup.find_all('tr')[1:51]
+        rows = soup.find_all('tr')[1:26]
         songs_to_insert = []
 
         for row in rows:
@@ -43,21 +59,41 @@ for date in dates:
             else:
                 artist, song = artist_and_title, ""
 
-            cursor.execute("""
-                SELECT COUNT(*) FROM songs WHERE song = ? AND artist = ?
-            """, (song, artist))
-            result = cursor.fetchone()
+            cursor.execute("SELECT id FROM artists WHERE name = ?", (artist,))
+            artist_id = cursor.fetchone()
 
-            if result[0] == 0:
-                songs_to_insert.append((artist, song, str(date)))
+            if artist_id is None:
+                cursor.execute("INSERT INTO artists (name) VALUES (?)", (artist,))
+                conn.commit()
+                artist_id = cursor.lastrowid
+            else:
+                artist_id = artist_id[0]
+
+            cursor.execute("SELECT COUNT(*) FROM songs WHERE song = ?", (song,))
+            song_exists = cursor.fetchone()[0]
+
+            if song_exists == 0:
+                songs_to_insert.append((artist_id, song, str(date)))
                 i += 1
-                #print(i, artist, song)
-            #else:
-                #print(f" alr in db {artist} & {song}")
+                print(f"{i}. Added song: {artist} - {song}")
+            else:
+                print(f"Skipped duplicate: {artist} - {song}")
 
         cursor.executemany("""
-            INSERT OR IGNORE INTO songs (artist, song, date)
+            INSERT OR IGNORE INTO songs (artist_id, song, date)
             VALUES (?, ?, ?)
         """, songs_to_insert)
         conn.commit()
+
+cursor.execute("""
+    UPDATE artists
+    SET 
+        num_songs = (
+            SELECT COUNT(*) FROM songs WHERE songs.artist_id = artists.id
+        ),
+        first_date = (
+            SELECT MIN(date) FROM songs WHERE songs.artist_id = artists.id
+        )
+""")
+conn.commit()
 conn.close()
