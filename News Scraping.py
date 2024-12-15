@@ -20,7 +20,7 @@ def create_news_dict(artist_name):
         'categories': 'general, entertainment',
         'countries': 'us',
         'keywords': artist_name,
-        'limit': 20,
+        'limit': 25,
         'sort': 'popularity'
         })
 
@@ -36,20 +36,26 @@ def create_news_dict(artist_name):
     return news_dict
     pass
 
-def create_news_database(dict, cur, conn):
-    news_data = dict['data']
+def create_news_database(dict_list, curr, conn):
+    for dict in dict_list:
+        data = dict['data']
+        i = 0
+        if i >= 25:
+            break
+        for article in data:
+            if i>= 25:
+                break
+            publish_date = article['published_at']
+            publish_date = (re.findall(r'\d{4}\-\d{2}\-\d{2}', publish_date))[0]
+            article['published_at'] = publish_date
 
-    for article in news_data:
-        publish_date = article['published_at']
-        publish_date = (re.findall(r'\d{4}\-\d{2}\-\d{2}', publish_date))[0]
-        article['published_at'] = publish_date
-
-        cur.execute('''INSERT OR IGNORE INTO News
-                    (name, description, date)
-                    VALUES (?, ?, ?)''',
-                    (article['title'],
-                    article['description'],
-                    article['published_at']))
+            curr.execute('''INSERT OR IGNORE INTO News
+                        (name, description, date)
+                        VALUES (?, ?, ?)''',
+                        (article['title'],
+                        article['description'],
+                        article['published_at']))
+            i += 0
     conn.commit()
 
     pass
@@ -59,7 +65,7 @@ def main():
     chap_dict = create_news_dict('Chappell Roan')
     billie_dict = create_news_dict('Linkin Park')
     dict_list = [jin_dict, chap_dict, billie_dict]
-    curr, con = set_up_database('main.db')
+    curr, conn = set_up_database('main.db')
 
     curr.execute("DROP TABLE News")
 
@@ -68,8 +74,7 @@ def main():
                 name TEXT,
                 description TEXT,
                 date INTEGER )''')
-    con.commit()
-    for dict in dict_list:
-        create_news_database(dict, curr, con)
-    con.close()
+    conn.commit()
+    create_news_database(dict_list, curr, conn)
+    conn.close()
 main()
