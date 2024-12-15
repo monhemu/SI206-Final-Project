@@ -78,28 +78,28 @@ def main():
 
     print(artist_list)
 
-    curr.execute('''SELECT id FROM News''')
+    curr.execute('''SELECT COUNT(*) FROM News''')
     news_list = curr.fetchall()
-    print(len(news_list))
+    print(news_list)
 
-    if len(news_list) == 0:
+    if news_list[0][0] == 0:
         artist = artist_list[0]
         artist_dict = create_news_dict(artist[1])
         create_news_database(artist_dict, curr, conn)
-    elif len(news_list) <= 25:
+    elif news_list[0][0]  <= 25:
         artist = artist_list[1]
         artist_dict = create_news_dict(artist[1])
         create_news_database(artist_dict, curr, conn)
-    elif len(news_list) <= 50:
+    elif news_list[0][0]  <= 50:
         artist = artist_list[2]
         artist_dict = create_news_dict(artist[1])
         create_news_database(artist_dict, curr, conn)
-    elif len(news_list) <= 75:
+    elif news_list[0][0]  <= 75:
         artist = artist_list[3]
         artist_dict = create_news_dict(artist[1])
         create_news_database(artist_dict, curr, conn)
-    if len(news_list) <= 100:
-        artist = artist_list[4]
+    elif news_list[0][0]  <= 100:
+        artist = artist_list[3]
         artist_dict = create_news_dict(artist[1])
         create_news_database(artist_dict, curr, conn)  
     
