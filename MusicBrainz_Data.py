@@ -19,7 +19,6 @@ def fetch_artist_info(cur, conn):
 
     #use SQL to retrieve the artists from tracks, take the code from homework 7 that made the types table
 	#create a new table that inputs the unique artists and assigns them integer keys
-	#
 
 	'''
 	for artist in artist_list:
