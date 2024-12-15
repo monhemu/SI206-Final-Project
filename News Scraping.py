@@ -17,7 +17,7 @@ def create_news_dict(artist_name):
     conn = http.client.HTTPConnection('api.mediastack.com')
     params = urllib.parse.urlencode({
         'access_key': ACCESS_KEY,
-        'categories': 'entertainment',
+        'categories': 'general, entertainment',
         'countries': 'us',
         'keywords': artist_name,
         'limit': 20,
@@ -55,13 +55,13 @@ def create_news_database(dict, cur, conn):
     pass
 
 def main():
-    jin_dict = create_news_dict('Jin')
+    jin_dict = create_news_dict('BTS, Jin')
     chap_dict = create_news_dict('Chappell Roan')
     billie_dict = create_news_dict('Linkin Park')
     dict_list = [jin_dict, chap_dict, billie_dict]
     curr, con = set_up_database('main.db')
 
-    #curr.execute("DROP TABLE News")
+    curr.execute("DROP TABLE News")
 
     curr.execute('''CREATE TABLE IF NOT EXISTS News
                 ( id INTEGER PRIMARY KEY,
