@@ -99,7 +99,7 @@ def main():
         artist_dict = create_news_dict(artist[1])
         create_news_database(artist_dict, curr, conn)
     elif news_list[0][0]  <= 100:
-        artist = artist_list[3]
+        artist = artist_list[4]
         artist_dict = create_news_dict(artist[1])
         create_news_database(artist_dict, curr, conn)  
     
