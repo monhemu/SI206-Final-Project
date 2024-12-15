@@ -12,10 +12,14 @@ def db_setup(db_name):
 	return conn, cur
 
 
-def fetch_artist_info():
+def fetch_artist_info(cur, conn):
 	artist_list = ['P!nk', 'BTS', 'Tyla', 'Tame Impala', 'Normani']
 
 	ARTIST = 'P!nk'
+
+    #use SQL to retrieve the artists from tracks, take the code from homework 7 that made the types table
+	#create a new table that inputs the unique artists and assigns them integer keys
+	#
 
 	'''
 	for artist in artist_list:
@@ -31,7 +35,7 @@ def fetch_artist_info():
 	return ''
 
 
-def create_artist_table(cur, conn):
+def create_artist_country_table(cur, conn):
 	# Create table if it doesn't exist
 	cur.execute("""
     	CREATE TABLE IF NOT EXISTS songs (
