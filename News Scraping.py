@@ -63,7 +63,9 @@ def main():
 
     #curr.execute('''DROP TABLE News''')
 
-    curr.execute('''SELECT * FROM artists LIMIT 5''')
+    curr.execute('''SELECT * FROM artists
+                ORDER BY num_songs DESC
+                LIMIT 5''')
     artist_list = curr.fetchall()
 
     curr.execute('''CREATE TABLE IF NOT EXISTS News
@@ -78,26 +80,27 @@ def main():
 
     curr.execute('''SELECT id FROM News''')
     news_list = curr.fetchall()
+    print(len(news_list))
 
     if len(news_list) == 0:
         artist = artist_list[0]
         artist_dict = create_news_dict(artist[1])
         create_news_database(artist_dict, curr, conn)
-    if len(news_list) == 25:
+    elif len(news_list) <= 25:
         artist = artist_list[1]
         artist_dict = create_news_dict(artist[1])
         create_news_database(artist_dict, curr, conn)
-    if len(news_list) == 50:
+    elif len(news_list) <= 50:
         artist = artist_list[2]
         artist_dict = create_news_dict(artist[1])
         create_news_database(artist_dict, curr, conn)
-    if len(news_list) == 75:
+    elif len(news_list) <= 75:
         artist = artist_list[3]
         artist_dict = create_news_dict(artist[1])
         create_news_database(artist_dict, curr, conn)
-    if len(news_list) == 100:
+    if len(news_list) <= 100:
         artist = artist_list[4]
         artist_dict = create_news_dict(artist[1])
-        create_news_database(artist_dict, curr, conn)
+        create_news_database(artist_dict, curr, conn)  
     
 main()
