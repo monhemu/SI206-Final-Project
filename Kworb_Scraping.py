@@ -1,7 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 import sqlite3
-import sys 
+import sys
+import re
 sys.stdout.reconfigure(encoding='utf-8')
 
 dates = [20240906, 20240913, 20240920, 20240927, 20241004, 20241011,
@@ -11,77 +12,71 @@ dates = [20240906, 20240913, 20240920, 20240927, 20241004, 20241011,
 conn = sqlite3.connect('main.db')
 cursor = conn.cursor()
 
-#cursor.execute("DROP TABLE artists")
 #cursor.execute("DROP TABLE songs")
-
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS artists (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL UNIQUE
-    )
-""")
-
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS songs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        artist_id INTEGER NOT NULL,
+        artist TEXT NOT NULL,
         song TEXT NOT NULL UNIQUE,
         date TEXT NOT NULL,
-        FOREIGN KEY (artist_id) REFERENCES artists (id)
+        weeks_on_list INTEGER DEFAULT 1
     )
 """)
 conn.commit()
-
 i = 0
-for date in dates:
-    if i >= 25:
-        break
+try:
+    for date in dates:
+        if i >= 25:
+            break
 
-    url = f"https://kworb.net/ww/archive/{date}.html"
-    response = requests.get(url)
+        url = f"https://kworb.net/ww/archive/{date}.html"
+        response = requests.get(url)
 
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.content, "html.parser")
-        rows = soup.find_all('tr')[1:26]
-        songs_to_insert = []
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.content, "html.parser")
+            rows = soup.find_all('tr')[1:41]
+            songs_to_insert = []
 
-        for row in rows:
-            if i >= 25:
-                break
-            artist_and_title_column = row.find_all('td')[2]
-            artist_and_title = artist_and_title_column.find('div').text.strip()
-            if " - " in artist_and_title:
-                artists, song = artist_and_title.split(" - ", 1)
-                artist = artists.split(", ")[0]
-            else:
-                artist, song = artist_and_title, ""
+            for row in rows:
+                if i >= 25:
+                    break
+                artist_and_title_column = row.find_all('td')[2]
+                artist_and_title = artist_and_title_column.find('div').text.strip()
+                if " - " in artist_and_title:
+                    artists, song = artist_and_title.split(" - ", 1)
+                    artist = re.split(r"[,&]", artists.strip())[0].strip()
+                else:
+                    artist, song = artist_and_title, ""
+                    
+                cursor.execute("""
+                    SELECT id, date, weeks_on_list FROM songs WHERE song = ?
+                """, (song,))
+                existing_song = cursor.fetchone()
 
-            cursor.execute("SELECT id FROM artists WHERE name = ?", (artist,))
-            artist_id = cursor.fetchone()
+                if existing_song:
+                    song_id, last_date, weeks_on_list = existing_song
+                    # Update only if the current date is newer than the last recorded date
+                    if last_date < str(date):
+                        cursor.execute("""
+                            UPDATE songs
+                            SET weeks_on_list = weeks_on_list + 1, date = ?
+                            WHERE id = ?
+                        """, (str(date), song_id))
+                        print(f"Updated weeks_on_list for: {artist} - {song} (Weeks: {weeks_on_list + 1})")
+                    else:
+                        print(f"Skipped duplicate date for: {artist} - {song}")
+                else:
+                    # Add a new song to the insertion list
+                    songs_to_insert.append((artist, song, str(date), 1))
+                    i += 1
+                    print(f"{i}. Added song: {artist} - {song}")
 
-            if artist_id is None:
-                cursor.execute("INSERT INTO artists (name) VALUES (?)", (artist,))
-                conn.commit()
-                artist_id = cursor.lastrowid
-            else:
-                artist_id = artist_id[0]
+            # Insert new songs into the database
+            cursor.executemany("""
+                INSERT OR IGNORE INTO songs (artist, song, date, weeks_on_list)
+                VALUES (?, ?, ?, ?)
+            """, songs_to_insert)
+            conn.commit()
+finally:
+    conn.close()
 
-            cursor.execute("SELECT COUNT(*) FROM songs WHERE song = ?", (song,))
-            song_exists = cursor.fetchone()[0]
-
-            if song_exists == 0:
-                songs_to_insert.append((artist_id, song, str(date)))
-                i += 1
-                print(f"{i}. Added song: {artist} - {song}")
-            else:
-                print(f"Skipped duplicate: {artist} - {song}")
-
-        cursor.executemany("""
-            INSERT OR IGNORE INTO songs (artist_id, song, date)
-            VALUES (?, ?, ?)
-        """, songs_to_insert)
-        conn.commit()
-
-
-conn.commit()
-conn.close()
