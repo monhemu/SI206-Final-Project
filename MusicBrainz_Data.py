@@ -4,131 +4,81 @@ import os
 import requests
 import time
 
-#will need to input artist ID into the news table
-
 def db_setup(db_name):
-	#Set up connection to the database and the cursor
-	path = os.path.dirname(os.path.abspath(__file__))
-	conn = sqlite3.connect(path + "/" + db_name)
-	cur = conn.cursor()
-	return conn, cur
-
-
-
+    """
+    Set up connection to the database and return connection and cursor.
+    """
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path + "/" + db_name)
+    cur = conn.cursor()
+    return conn, cur
 
 def create_artists_table(cur, conn):
-	"""
-    Creates a table of countries.
-    
-    Args:
-        cur (cursor): The database cursor object
-        conn (connection): The database connection 
-
-	Returns:
-		data (dictionary): Artist names as keys and their countries as the values
     """
+    Creates a table of artists and their associated countries by querying the MusicBrainz API.
 
-	#Create the artist table with their associated countries
-	cur.execute('''
-			 CREATE TABLE IF NOT EXISTS Artists (
-			 id INTEGER PRIMARY KEY AUTOINCREMENT,
-			 name TEXT,
-			 country TEXT)''')
-	
-	#Grab the list of all artists from the songs table
-	cur.execute('SELECT artist FROM songs')
-	artist_list = cur.fetchall()
-	count = 0
-	
-	#Loop through the list of artists to make requests one at a time
-	for artist in artist_list:
+    Args:
+        cur (cursor): The database cursor object.
+        conn (connection): The database connection object.
+    """
+    # Create the Artists table
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS Artists (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE,
+            country TEXT
+        )
+    ''')
+    conn.commit()
 
-		#Check that 25 rows have been added
-		if count > 25:
-			print('Retrieved a set of 25 rows')
-			break
+    # Fetch a list of unique artists from the songs table
+    cur.execute('SELECT DISTINCT artist FROM songs')
+    artist_list = [row[0] for row in cur.fetchall()]  # Convert list of tuples to a list of strings
 
-		#Checks to see if the current artist has already been added to the table
-		cur.execute('SELECT * FROM Artists WHERE name = ?', (artist,))
-		try:
-			check_artist = cur.fetchone()[1]
-			print("Found in database ", artist)
-			continue
-		except:
-			pass
+    count = 0
 
-		url = f'https://musicbrainz.org/ws/2/artist/?query={artist}&fmt=json'
-		r = requests.get(url)
+    for artist in artist_list:
+        if count >= 25:  # Stop after processing 25 artists
+            print('Retrieved a set of 25 rows.')
+            break
 
-		if r.status_code == 200:
-			count += 1
-			info = json.loads(r.content)
-			print(info)
-		else:
-			print('Failed to retrieve data')
+        # Check if the artist already exists in the Artists table
+        cur.execute('SELECT * FROM Artists WHERE name = ?', (artist,))
+        if cur.fetchone():  # Skip if the artist already exists
+            print(f"Found in database: {artist}")
+            continue
 
-		#Grab the country information and insert it into the table with artist name
-		country = info['country']
-		cur.execute('INSERT INTO Artists (name, country) VALUES (?,?)', (artist, country))
-		conn.commit()
+        # Make the API request to MusicBrainz
+        url = f'https://musicbrainz.org/ws/2/artist/?query={artist}&fmt=json'
+        r = requests.get(url)
+        
+        if r.status_code == 200:
+            info = json.loads(r.content)
 
-		#Sleep for 3 seconds after every request (1 request/sec limit...)
-		time.sleep(3) 
+            # Attempt to retrieve the country information
+            if 'artists' in info and len(info['artists']) > 0:
+                country = info['artists'][0].get('country', 'Unknown')  # Default to 'Unknown' if country not found
+                cur.execute('INSERT INTO Artists (name, country) VALUES (?, ?)', (artist, country))
+                conn.commit()
+                print(f"Added: {artist} (Country: {country})")
+                count += 1
+            else:
+                print(f"No country information found for artist: {artist}")
+        else:
+            print(f"Failed to retrieve data for {artist}. Status code: {r.status_code}")
 
-
-
-def create_countries_table(cur, conn):
-	cur.execute('''CREATE TABLE IF NOT EXISTS countries (
-			 id PRIMARY INTEGER KEY AUTOINCREMENT,
-			 name TEXT)''')
-	
-	cur.execute('''SELECT country FROM Artists''')
-	country_list = cur.fetchall()
-
-	for country in country_list:
-		cur.execute('SELECT * FROM countries WHERE name = ?', (country,))
-		check_country = cur.fetchone()[2]
-
-		#If there already exists a row for that country, skip & go to the next
-		if check_country != None:
-			continue
-
-		cur.execute('INSERT INTO countries (name) VALUES ?', (country,))
-
-
-
-
+        # Sleep to respect the rate limit of MusicBrainz API
+        time.sleep(3)
 
 def main():
-    cur, conn = db_setup('main.db')
+    # Set up the database connection
+    conn, cur = db_setup('main.db')
+
+    # Create the Artists table and populate it with data
     create_artists_table(cur, conn)
-    create_countries_table(cur, conn)
-    #create_news_database(news_dict, curr, con)
 
-main()
+    # Close the database connection
+    conn.close()
 
-
-
-
-'''
-Everytime you run the code, the count will reset so that you only retrieve 25 items at a time
-Inside the for loop, have a mechanism where you check if the artist you're trying to input already
-exists in the table. If it does, skip the entire rest of the loop and move to the next artist. The next 
-artist will also go through the same round of checks, and after all the artists that already exist are 
-skipped, it should be able to pass the checks and start making requests for artists that don't exist.
-'''
-
-'''
-	#Create a list of unique countries based off the artist dictionary
-	country_list = []
-	for country in data.values():
-		if country not in country_list:
-			country_list.append(country)
-	
-	#Create a countries table and input the countries from the list
-	cur.execute('CREATE TABLE IF NOT EXISTS countries (id INTEGER PRIMARY KEY, name TEXT UNIQUE)')
-
-	for i in range(len(country_list)):
-		cur.execute("INSERT OR IGNORE INTO Countries (id,name) VALUES (?,?)", 
-			 		 (i, country_list[i]))
-	'''
+if __name__ == "__main__":
+    main()
