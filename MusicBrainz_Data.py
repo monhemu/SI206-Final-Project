@@ -118,7 +118,7 @@ def main():
     # Create the Artists table and populate it with data
     #create_artists_table(cur, conn)
 
-    #correct_artist_ids(cur, conn)
+    correct_artist_ids(cur, conn)
 
     #create_countries_table(cur, conn)
 

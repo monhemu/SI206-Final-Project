@@ -8,7 +8,7 @@ cur = conn.cursor()
 
 #visualization for artist news / charted songs
 #get data for artist charting songs/dates
-cur.execute('''SELECT artists.name, COUNT(songs.id) as song_count
+cur.execute('''SELECT artists.name, songs.artist_id, COUNT(songs.id) as song_count
                     FROM artists
                     JOIN songs ON artists.id = songs.artist_id
                     WHERE country_id = ?
@@ -20,6 +20,7 @@ cur.execute('''SELECT artists.name, COUNT(songs.id) as song_count
 top_5_artists = cur.fetchall()
 artist_dict = {}
 for artist in top_5_artists:
+    print(artist)
     artist_dict[artist[0]] = {}
     cur.execute('''SELECT date FROM songs
                     WHERE artist_id = ?''',
@@ -50,7 +51,7 @@ for artist in top_5_artists:
             else:
                 news_dict[artist[0]][date] += 1
 
-plt.figure(figsize=(15, 10))
+plt.figure(figsize=(30, 5))
 plt.xlabel('Dates')
 plt.ylabel('Number of appearances')
 plt.title('Number of Articles Written About Artist vs. Charted Songs')
@@ -58,9 +59,8 @@ plt.title('Number of Articles Written About Artist vs. Charted Songs')
 
 for artist in news_dict:
     dates = sorted(news_dict[artist].keys())
-    print(dates)
     values = news_dict[artist].values()
-    plt.plot(dates, values)
+    plt.plot(dates, values, alpha=0.5)
 
 for artist in artist_dict:
     dates = sorted(artist_dict[artist].keys())
@@ -91,7 +91,7 @@ cur.execute("""
 
 # Fetch results
 results = cur.fetchall()
-print(results)
+#rint(results)
 song_total = 0
 
 for tup in results:
@@ -104,10 +104,10 @@ country, size = zip(*results)
 country = list(country)
 size = list(size)
 
-print(country)
-print(size)
+#print(country)
+#print(size)
 
-print(song_total)
+#print(song_total)
 
 
 conn.close()
