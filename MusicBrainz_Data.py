@@ -92,6 +92,7 @@ def correct_artist_ids(cur, conn):
                 SET artist_id = Artists.id
                 FROM Artists
                 WHERE songs.artist = Artists.name''')
+    conn.commit()
     
     cur.execute('''ALTER TABLE songs DROP COLUMN artist''')
     conn.commit()
@@ -103,6 +104,7 @@ def correct_country_ids(cur, conn):
                 SET country_id = countries.id
                 FROM countries
                 WHERE Artists.country = countries.name''')
+    conn.commit()
     
     cur.execute('''ALTER TABLE Artists DROP COLUMN country''')
     conn.commit()
@@ -114,13 +116,13 @@ def main():
     conn, cur = db_setup('main.db')
 
     # Create the Artists table and populate it with data
-    #create_artists_table(cur, conn)
+    create_artists_table(cur, conn)
 
-    #correct_artist_ids(cur, conn)
+    correct_artist_ids(cur, conn)
 
-    #create_countries_table(cur, conn)
+    create_countries_table(cur, conn)
 
-    #correct_country_ids(cur, conn)
+    correct_country_ids(cur, conn)
 
     # Close the database connection
     conn.close()
