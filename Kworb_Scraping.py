@@ -34,7 +34,7 @@ conn.commit()
 i = 0
 try:
     for date in dates:
-        if i >= 150:
+        if i >= 25:
             break
 
         url = f"https://kworb.net/ww/archive/{date}.html"
@@ -46,7 +46,7 @@ try:
             songs_to_insert = []
 
             for row in rows:
-                if i >= 150:
+                if i >= 25:
                     break
                 artist_and_title_column = row.find_all('td')[2]
                 artist_and_title = artist_and_title_column.find('div').text.strip()
