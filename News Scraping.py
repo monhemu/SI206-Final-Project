@@ -69,7 +69,7 @@ def main():
                     WHERE country_id = ?
                     GROUP BY artists.name
                     ORDER BY song_count DESC
-                    LIMIT 10''',
+                    LIMIT 5''',
                     (1,))
     
     artist_list = curr.fetchall()
@@ -90,27 +90,28 @@ def main():
 
     if news_list[0][0] == 0:
         artist = artist_list[0]
-        artist_dict = create_news_dict(artist[0])
+        artist_name = artist[0].replace('-', ' ')
+        artist_dict = create_news_dict(artist_name)
         create_news_database(artist_dict, curr, conn)
     elif news_list[0][0]  <= 25:
         artist = artist_list[1]
-        artist_dict = create_news_dict(artist[0])
+        artist_name = artist[0].replace('-', ' ')
+        artist_dict = create_news_dict(artist_name)
         create_news_database(artist_dict, curr, conn)
     elif news_list[0][0]  <= 50:
         artist = artist_list[2]
-        artist_dict = create_news_dict(artist[0])
+        artist_name = artist[0].replace('-', ' ')
+        artist_dict = create_news_dict(artist_name)
         create_news_database(artist_dict, curr, conn)
     elif news_list[0][0]  <= 75:
         artist = artist_list[3]
-        artist_dict = create_news_dict(artist[0])
+        artist_name = artist[0].replace('-', ' ')
+        artist_dict = create_news_dict(artist_name)
         create_news_database(artist_dict, curr, conn)
     elif news_list[0][0]  <= 100:
         artist = artist_list[4]
-        artist_dict = create_news_dict(artist[0])
-        if 'data' not in artist_dict.keys():
-            artist = artist_list[5]
-        print(artist)
-        artist_dict = create_news_dict(artist[0])
+        artist_name = artist[0].replace('-', ' ')
+        artist_dict = create_news_dict(artist_name)
         create_news_database(artist_dict, curr, conn)  
     
 main()

@@ -6,11 +6,6 @@ import sqlite3
 conn = sqlite3.connect('main.db')
 cur = conn.cursor()
 
-
-
-#plt.savefig("songs_per_artist.png")
-#plt.show()
-
 #visualization for artist news / charted songs
 #get data for artist charting songs/dates
 cur.execute('''SELECT artists.name, COUNT(songs.id) as song_count
