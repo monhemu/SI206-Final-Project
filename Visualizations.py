@@ -51,11 +51,11 @@ for artist in top_5_artists:
                     (artist[1],))
     song_dates = cur.fetchall()
     for date in song_dates:
-            
-        if date[0] not in artist_dict[artist[0]]:
-            artist_dict[artist[0]][date[0]] = 1
+        int_date = int(date[0])
+        if int_date not in artist_dict[artist[0]]:
+            artist_dict[artist[0]][int_date] = 1
         else:
-            artist_dict[artist[0]][date[0]] += 1
+            artist_dict[artist[0]][int_date] += 1
 
 #get data for artist news
 i = 0
@@ -70,27 +70,36 @@ for artist in top_5_artists:
     news_dict[artist[0]] = {}
     for news_date in news_dates:
         for date in news_date:
-            date = str(date)
             if date not in news_dict[artist[0]]:
                 news_dict[artist[0]][date] = 1
             else:
                 news_dict[artist[0]][date] += 1
 
 plt.figure(figsize=(15, 10))
-
+plt.xlabel('Dates')
+plt.ylabel('Number of appearances')
+plt.title('Number of Articles Written About Artist vs. Charted Songs')
 #create plot
-
-for artist in artist_dict:
-    dates = artist_dict[artist].keys()
-    values = artist_dict[artist].values()
-    plt.scatter(dates, values)
-
-plt.figure(figsize=(15, 10))
 
 for artist in news_dict:
     dates = sorted(news_dict[artist].keys())
+    print(dates)
     values = news_dict[artist].values()
     plt.plot(dates, values)
+
+for artist in artist_dict:
+    dates = sorted(artist_dict[artist].keys())
+    values = artist_dict[artist].values()
+    plt.scatter(dates, values)
+
+legend = []
+for artist in top_5_artists:
+    legend.append(f'Articles About {artist[0]}')
+for artist in top_5_artists:
+    legend.append(f'Charting Songs For {artist[0]}')
+plt.legend(legend)
+
+
 plt.show()
 conn.close()
 
