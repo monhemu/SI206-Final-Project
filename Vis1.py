@@ -1,33 +1,31 @@
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-import datetime
 import sqlite3
+import matplotlib.pyplot as plt
 
-conn = sqlite3.connect('main.db')
-cur = conn.cursor()
+conn = sqlite3.connect("main.db")
+cursor = conn.cursor()
 
-cur.execute("""
-    SELECT artists.name, COUNT(songs.id) as song_count
-    FROM artists
-    JOIN songs ON artists.id = songs.artist_id
-    GROUP BY artists.name
-    ORDER BY song_count DESC
-""")
+cursor.execute(
+    """
+    SELECT songs.song, songs.weeks_on_list
+    FROM songs
+    JOIN artists ON songs.artist_id = artists.id
+    WHERE songs.weeks_on_list > 2
+    ORDER BY songs.weeks_on_list DESC
+    """
+)
 
-# Fetch results
-results = cur.fetchall()
+songs = cursor.fetchall()
+conn.close()
 
-# Extract data for visualization
-artist_names = [row[0] for row in results]
-song_counts = [row[1] for row in results]
+song_names = [song for song, _ in songs]
+weeks_on_chart = [weeks for _, weeks in songs]
 
-# Create a bar chart
-plt.figure(figsize=(15, 10))
-plt.bar(artist_names, song_counts, color='skyblue', width=0.6)
-plt.xlabel("Number of Songs")
-plt.ylabel("Artists")
-plt.title("Number of Songs per Artist")
-plt.xticks(rotation=90)
-plt.gca().invert_yaxis() 
+plt.figure(figsize=(10, 8))
+plt.barh(song_names, weeks_on_chart)
+plt.xlabel("Weeks on Chart", fontsize=12)
+plt.ylabel("Songs", fontsize=12)
+plt.title("Longest Charting Songs (More than 2 Weeks)", fontsize=14)
+plt.gca().invert_yaxis()
 plt.tight_layout()
 plt.show()
+
