@@ -5,7 +5,7 @@ import http.client, urllib.parse
 import re
 import os
 
-ACCESS_KEY = '2fa8285f6524f9eaa36621d2cb990242'
+ACCESS_KEY = '70673ffb38f29475d1325145b9aa2cf1'
 
 
 def set_up_database(db_name):
@@ -61,12 +61,16 @@ pass
 def main():
     curr, conn = set_up_database('main.db')
 
+    #curr.execute('''DROP TABLE News''')
+
     curr.execute('''SELECT artists.name, COUNT(songs.id) as song_count
                     FROM artists
                     JOIN songs ON artists.id = songs.artist_id
+                    WHERE country_id = ?
                     GROUP BY artists.name
                     ORDER BY song_count DESC
-                    LIMIT 5''')
+                    LIMIT 10''',
+                    (1,))
     
     artist_list = curr.fetchall()
 
@@ -86,23 +90,27 @@ def main():
 
     if news_list[0][0] == 0:
         artist = artist_list[0]
-        artist_dict = create_news_dict(artist[1])
+        artist_dict = create_news_dict(artist[0])
         create_news_database(artist_dict, curr, conn)
     elif news_list[0][0]  <= 25:
         artist = artist_list[1]
-        artist_dict = create_news_dict(artist[1])
+        artist_dict = create_news_dict(artist[0])
         create_news_database(artist_dict, curr, conn)
     elif news_list[0][0]  <= 50:
         artist = artist_list[2]
-        artist_dict = create_news_dict(artist[1])
+        artist_dict = create_news_dict(artist[0])
         create_news_database(artist_dict, curr, conn)
     elif news_list[0][0]  <= 75:
         artist = artist_list[3]
-        artist_dict = create_news_dict(artist[1])
+        artist_dict = create_news_dict(artist[0])
         create_news_database(artist_dict, curr, conn)
     elif news_list[0][0]  <= 100:
         artist = artist_list[4]
-        artist_dict = create_news_dict(artist[1])
+        artist_dict = create_news_dict(artist[0])
+        if 'data' not in artist_dict.keys():
+            artist = artist_list[5]
+        print(artist)
+        artist_dict = create_news_dict(artist[0])
         create_news_database(artist_dict, curr, conn)  
     
 main()

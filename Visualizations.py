@@ -36,12 +36,14 @@ plt.tight_layout()
 
 #visualization for artist news / charted songs
 #get data for artist charting songs/dates
-cur.execute('''SELECT artists.name, artists.id, COUNT(songs.id) as song_count
-                FROM artists
-                JOIN songs ON artists.id = songs.artist_id
-                GROUP BY artists.name
-                ORDER BY song_count DESC
-                LIMIT 5''')
+cur.execute('''SELECT artists.name, COUNT(songs.id) as song_count
+                    FROM artists
+                    JOIN songs ON artists.id = songs.artist_id
+                    WHERE country_id = ?
+                    GROUP BY artists.name
+                    ORDER BY song_count DESC
+                    LIMIT 5''',
+                    (1,))
 
 top_5_artists = cur.fetchall()
 artist_dict = {}
