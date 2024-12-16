@@ -63,9 +63,13 @@ def main():
 
     #curr.execute('''DROP TABLE News''')
 
-    curr.execute('''SELECT * FROM artists
-                ORDER BY num_songs DESC
-                LIMIT 5''')
+    curr.execute('''SELECT artists.name, COUNT(songs.id) as song_count
+                    FROM artists
+                    JOIN songs ON artists.id = songs.artist_id
+                    GROUP BY artists.name
+                    ORDER BY song_count DESC
+                    LIMIT 5''')
+    
     artist_list = curr.fetchall()
 
     curr.execute('''CREATE TABLE IF NOT EXISTS News
