@@ -13,25 +13,26 @@ def db_setup(db_name):
 
 
 def fetch_artist_info(cur, conn):
-	artist_list = ['P!nk', 'BTS', 'Tyla', 'Tame Impala', 'Normani']
+	artist_list = ['BTS']
 
 	ARTIST = 'P!nk'
 
     #use SQL to retrieve the artists from tracks, take the code from homework 7 that made the types table
 	#create a new table that inputs the unique artists and assigns them integer keys
-	#
 
-	'''
+	
 	for artist in artist_list:
 		url = f'https://musicbrainz.org/ws/2/artist/?query={artist}&fmt=json'
 		r = requests.get(url)
 
 		if r.status_code == 200:
 			info = json.loads(r.content)
+			print(info['Response'])
 			print(info)
 		else:
 			print('Failed to retrieve data')
-	'''
+	
+
 	return ''
 
 
@@ -58,7 +59,8 @@ def create_countries_table(cur, conn):
 
 def main():
     #artist_info = fetch_artist_info()
-    curr, con = db_setup('main.db')
+    cur, conn = db_setup('main.db')
+    fetch_artist_info(cur, conn)
     #create_news_database(news_dict, curr, con)
 
 main()

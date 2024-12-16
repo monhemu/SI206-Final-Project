@@ -5,7 +5,8 @@ import http.client, urllib.parse
 import re
 import os
 
-ACCESS_KEY = '98ccceb701f523f653f3ea662ec39fdc'
+ACCESS_KEY = '2fa8285f6524f9eaa36621d2cb990242'
+
 
 def set_up_database(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
@@ -13,14 +14,14 @@ def set_up_database(db_name):
     cur = conn.cursor()
     return cur, conn
 
-def create_news_dict():
+def create_news_dict(artist_name):
     conn = http.client.HTTPConnection('api.mediastack.com')
     params = urllib.parse.urlencode({
         'access_key': ACCESS_KEY,
-        'categories': 'general',
+        'categories': 'general, entertainment',
         'countries': 'us',
-        'keywords': 'cyclone',
-        'limit': 100,
+        'keywords': artist_name,
+        'limit': 25,
         'sort': 'popularity'
         })
 
@@ -36,33 +37,70 @@ def create_news_dict():
     return news_dict
     pass
 
-def create_news_database(dict, cur, conn):
-    news_data = dict['data']
-
-    cur.execute('''CREATE TABLE IF NOT EXISTS News
-                ( id INTEGER PRIMARY KEY,
-                name TEXT,
-                description TEXT,
-                date INTEGER )''')
-
-    for article in news_data:
+def create_news_database(dict, curr, conn):
+    data = dict['data']
+    i = 0
+    for article in data:
+        if i>= 25:
+             break
         publish_date = article['published_at']
         publish_date = (re.findall(r'\d{4}\-\d{2}\-\d{2}', publish_date))[0]
-        article['published_at'] = publish_date
-
-        cur.execute('''INSERT OR IGNORE INTO News
+        publish_date = publish_date.replace('-','')
+        article['published_at'] = int(publish_date)
+        curr.execute('''INSERT OR IGNORE INTO News
                     (name, description, date)
                     VALUES (?, ?, ?)''',
                     (article['title'],
                     article['description'],
                     article['published_at']))
+        i += 0
     conn.commit()
 
-    pass
+pass
 
 def main():
-    news_dict = create_news_dict()
-    curr, con = set_up_database('main.db')
-    create_news_database(news_dict, curr, con)
+    curr, conn = set_up_database('main.db')
 
+    #curr.execute('''DROP TABLE News''')
+
+    curr.execute('''SELECT * FROM artists
+                ORDER BY num_songs DESC
+                LIMIT 5''')
+    artist_list = curr.fetchall()
+
+    curr.execute('''CREATE TABLE IF NOT EXISTS News
+                ( id INTEGER PRIMARY KEY,
+                name TEXT,
+                description TEXT,
+                date INTEGER )''')
+    
+    conn.commit()
+
+    print(artist_list)
+
+    curr.execute('''SELECT COUNT(*) FROM News''')
+    news_list = curr.fetchall()
+    print(news_list)
+
+    if news_list[0][0] == 0:
+        artist = artist_list[0]
+        artist_dict = create_news_dict(artist[1])
+        create_news_database(artist_dict, curr, conn)
+    elif news_list[0][0]  <= 25:
+        artist = artist_list[1]
+        artist_dict = create_news_dict(artist[1])
+        create_news_database(artist_dict, curr, conn)
+    elif news_list[0][0]  <= 50:
+        artist = artist_list[2]
+        artist_dict = create_news_dict(artist[1])
+        create_news_database(artist_dict, curr, conn)
+    elif news_list[0][0]  <= 75:
+        artist = artist_list[3]
+        artist_dict = create_news_dict(artist[1])
+        create_news_database(artist_dict, curr, conn)
+    elif news_list[0][0]  <= 100:
+        artist = artist_list[4]
+        artist_dict = create_news_dict(artist[1])
+        create_news_database(artist_dict, curr, conn)  
+    
 main()
