@@ -68,14 +68,54 @@ def create_artists_table(cur, conn):
             print(f"Failed to retrieve data for {artist}. Status code: {r.status_code}")
 
         # Sleep to respect the rate limit of MusicBrainz API
-        time.sleep(3)
+        time.sleep(2)
+
+
+
+def create_countries_table(cur, conn):
+    #Create table named countries
+    cur.execute('CREATE TABLE IF NOT EXISTS countries (id INTEGER PRIMARY KEY, name TEXT)')
+    conn.commit()
+
+    cur.execute('SELECT DISTINCT country FROM Artists')
+    country_list = [row[0] for row in cur.fetchall()]  # Convert list of tuples to a list of strings
+    print(country_list)
+
+    for country in country_list:
+        cur.execute('''INSERT INTO countries (name) VALUES (?)''', (country,))
+
+    conn.commit()
+
+
+def correct_artist_ids(cur, conn):
+    cur.execute('''SELECT id, name FROM Artists''')
+    artist_data = cur.fetchall()
+    artist_dict = {}
+    print(artist_data)
+
+    for ids, name in artist_data:
+        artist_dict[name] = ids
+
+    cur.execute('''ALTER TABLE songs ADD COLUMN artist_id INT''')
+    cur.execute('''UPDATE songs 
+                SET artist_id = Artists.id
+                FROM Artists
+                WHERE songs.artist = Artists.name''')
+    
+    cur.execute('''ALTER TABLE songs DROP COLUMN artist''')
+    conn.commit()
+
 
 def main():
     # Set up the database connection
     conn, cur = db_setup('main.db')
 
     # Create the Artists table and populate it with data
-    create_artists_table(cur, conn)
+    #create_artists_table(cur, conn)
+
+    #correct_artist_ids(cur, conn)
+
+    create_countries_table(cur, conn)
 
     # Close the database connection
     conn.close()
