@@ -1,22 +1,20 @@
 import sqlite3
 conn = sqlite3.connect("main.db")
 cur = conn.cursor()
+
 cur.execute("""
-    SELECT artists.country_id, AVG(songs.weeks_on_list) as weeks_on_list
+    SELECT countries.name AS country_name, AVG(songs.weeks_on_list) AS avg_weeks
     FROM songs
     JOIN artists ON songs.artist_id = artists.id
-    GROUP BY artists.country_id
-    ORDER BY weeks_on_list DESC
+    JOIN countries ON artists.country_id = countries.id
+    GROUP BY countries.id ORDER BY avg_weeks DESC
 """)
-
-
 rows = cur.fetchall()
 
-with open('average_weeks_by_nationality.txt', 'w') as f:
-    f.write(f"Average Weeks on Chart by Nationality:\n")
+with open('average_weeks_by_nationality.txt', 'w', encoding='utf-8') as f:
+    f.write("Average Weeks on Chart by Nationality:\n")
     for row in rows:
-        nationality, avg_weeks = row
-        f.write(f"{nationality}: {avg_weeks:.2f} weeks\n")
-
-print("Average weeks on chart by nationality written to 'average_weeks_by_nationality.txt'")
+        country_name, avg_weeks = row
+        f.write(f"{country_name}: {avg_weeks:.2f} weeks\n")
+        
 conn.close()
