@@ -87,14 +87,6 @@ def create_countries_table(cur, conn):
 
 
 def correct_artist_ids(cur, conn):
-    cur.execute('''SELECT id, name FROM Artists''')
-    artist_data = cur.fetchall()
-    artist_dict = {}
-    print(artist_data)
-
-    for ids, name in artist_data:
-        artist_dict[name] = ids
-
     cur.execute('''ALTER TABLE songs ADD COLUMN artist_id INT''')
     cur.execute('''UPDATE songs 
                 SET artist_id = Artists.id
@@ -103,6 +95,18 @@ def correct_artist_ids(cur, conn):
     
     cur.execute('''ALTER TABLE songs DROP COLUMN artist''')
     conn.commit()
+
+
+def correct_country_ids(cur, conn):
+    cur.execute('''ALTER TABLE Artists ADD COLUMN country_id INT''')
+    cur.execute('''UPDATE Artists 
+                SET country_id = countries.id
+                FROM countries
+                WHERE Artists.country = countries.name''')
+    
+    cur.execute('''ALTER TABLE Artists DROP COLUMN country''')
+    conn.commit()
+
 
 
 def main():
@@ -115,6 +119,8 @@ def main():
     #correct_artist_ids(cur, conn)
 
     #create_countries_table(cur, conn)
+
+    #correct_country_ids(cur, conn)
 
     # Close the database connection
     conn.close()
