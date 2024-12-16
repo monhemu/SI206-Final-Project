@@ -20,7 +20,7 @@ cur.execute('''SELECT artists.name, songs.artist_id, COUNT(songs.id) as song_cou
 top_5_artists = cur.fetchall()
 artist_dict = {}
 for artist in top_5_artists:
-    print(artist)
+    #print(artist)
     artist_dict[artist[0]] = {}
     cur.execute('''SELECT date FROM songs
                     WHERE artist_id = ?''',
