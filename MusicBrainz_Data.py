@@ -13,7 +13,7 @@ def db_setup(db_name):
     cur = conn.cursor()
     return conn, cur
 
-def create_artists_table(cur, conn):
+def create_countries_table(cur, conn):
     """
     Creates a table of artists and their associated countries by querying the MusicBrainz API.
 
@@ -21,32 +21,28 @@ def create_artists_table(cur, conn):
         cur (cursor): The database cursor object.
         conn (connection): The database connection object.
     """
-    # Create the Artists table
-    cur.execute('''
-        CREATE TABLE IF NOT EXISTS Artists (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT UNIQUE,
-            country TEXT
-        )
-    ''')
+    
+    #Create table named countries
+    cur.execute('CREATE TABLE IF NOT EXISTS countries (id INTEGER PRIMARY KEY, name TEXT)')
     conn.commit()
 
-    # Fetch a list of unique artists from the songs table
-    cur.execute('SELECT DISTINCT artist FROM songs')
-    artist_list = [row[0] for row in cur.fetchall()]  # Convert list of tuples to a list of strings
+    #Create an intermediate table named country_to_artist
+    cur.execute('''CREATE TABLE IF NOT EXISTS country_to_artist (
+                artist_id INTEGER PRIMARY KEY, 
+                artist TEXT, 
+                country TEXT)''')
 
+    # Fetch a list of artist names from the artists table
+    cur.execute('SELECT name FROM artists')
+    artist_list = [row[0] for row in cur.fetchall()]  # Convert list of tuples to a list of strings
     count = 0
 
+    
     for artist in artist_list:
         if count >= 25:  # Stop after processing 25 artists
             print('Retrieved a set of 25 rows.')
             break
-
-        # Check if the artist already exists in the Artists table
-        cur.execute('SELECT * FROM Artists WHERE name = ?', (artist,))
-        if cur.fetchone():  # Skip if the artist already exists
-            print(f"Found in database: {artist}")
-            continue
+        
 
         # Make the API request to MusicBrainz
         url = f'https://musicbrainz.org/ws/2/artist/?query={artist}&fmt=json'
@@ -58,9 +54,20 @@ def create_artists_table(cur, conn):
             # Attempt to retrieve the country information
             if 'artists' in info and len(info['artists']) > 0:
                 country = info['artists'][0].get('country', 'Unknown')  # Default to 'Unknown' if country not found
-                cur.execute('INSERT INTO Artists (name, country) VALUES (?, ?)', (artist, country))
+                
+                cur.execute('INSERT INTO country_to_artist (artist, country) VALUES (?,?)', (artist, country))
                 conn.commit()
-                print(f"Added: {artist} (Country: {country})")
+
+                # Check if the country already exists in the countries table
+                cur.execute('SELECT * FROM countries WHERE name = ?', (country,))
+                if cur.fetchone():  # Skip if the country already exists
+                    print(f"Found in database: {country}")
+                    continue
+
+                cur.execute('INSERT INTO countries (name) VALUES (?)', (country,))
+                conn.commit()
+                
+                print(f"Added: {country})")
                 count += 1
             else:
                 print(f"No country information found for artist: {artist}")
@@ -68,45 +75,19 @@ def create_artists_table(cur, conn):
             print(f"Failed to retrieve data for {artist}. Status code: {r.status_code}")
 
         # Sleep to respect the rate limit of MusicBrainz API
-        time.sleep(2)
+        time.sleep(1.1)
 
 
 
-def create_countries_table(cur, conn):
-    #Create table named countries
-    cur.execute('CREATE TABLE IF NOT EXISTS countries (id INTEGER PRIMARY KEY, name TEXT)')
+def assign_country_ids(cur, conn):
+    cur.execute('''ALTER TABLE artists ADD COLUMN country_id INTEGER''')
     conn.commit()
-
-    cur.execute('SELECT DISTINCT country FROM Artists')
-    country_list = [row[0] for row in cur.fetchall()]  # Convert list of tuples to a list of strings
-
-    for country in country_list:
-        cur.execute('''INSERT INTO countries (name) VALUES (?)''', (country,))
-
-    conn.commit()
-
-
-def correct_artist_ids(cur, conn):
-    cur.execute('''ALTER TABLE songs ADD COLUMN artist_id INT''')
-    cur.execute('''UPDATE songs 
-                SET artist_id = Artists.id
-                FROM Artists
-                WHERE songs.artist = Artists.name''')
-    conn.commit()
-    
-    cur.execute('''ALTER TABLE songs DROP COLUMN artist''')
-    conn.commit()
-
-
-def correct_country_ids(cur, conn):
-    cur.execute('''ALTER TABLE Artists ADD COLUMN country_id INT''')
-    cur.execute('''UPDATE Artists 
-                SET country_id = countries.id
+    cur.execute('''UPDATE artists
+                SET country_id = (
+                SELECT countries.id
                 FROM countries
-                WHERE Artists.country = countries.name''')
-    conn.commit()
-    
-    cur.execute('''ALTER TABLE Artists DROP COLUMN country''')
+                JOIN country_to_artist ON countries.name = country_to_artist.country
+                WHERE country_to_artist.artist_id = artists.id)''')
     conn.commit()
 
 
@@ -116,15 +97,11 @@ def main():
     conn, cur = db_setup('main.db')
 
     # Create the Artists table and populate it with data
-    #create_artists_table(cur, conn)
+    create_countries_table(cur, conn)
 
-    correct_artist_ids(cur, conn)
+    #Assign country ids to each artist in the artists table
+    assign_country_ids(cur, conn)
 
-    #create_countries_table(cur, conn)
-
-    #correct_country_ids(cur, conn)
-
-    # Close the database connection
     conn.close()
 
 if __name__ == "__main__":
