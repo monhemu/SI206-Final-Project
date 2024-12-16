@@ -2,12 +2,13 @@ import sqlite3
 conn = sqlite3.connect("main.db")
 cur = conn.cursor()
 cur.execute("""
-    SELECT artists.country, AVG(songs.weeks_on_list) as weeks_on_list
+    SELECT Artists.country_id, AVG(songs.weeks_on_list) as weeks_on_list
     FROM songs
-    JOIN Artists ON songs.artist = Artists.name
-    GROUP BY Artists.country
+    JOIN Artists ON songs.artist_id = Artists.id
+    GROUP BY Artists.country_id
     ORDER BY weeks_on_list DESC
 """)
+
 
 rows = cur.fetchall()
 
