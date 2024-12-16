@@ -17,9 +17,7 @@ cursor = conn.cursor()
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS artists (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL UNIQUE,
-        num_songs INTEGER DEFAULT 0,
-        first_date TEXT DEFAULT NULL
+        name TEXT NOT NULL UNIQUE
     )
 """)
 
@@ -84,15 +82,6 @@ for date in dates:
         """, songs_to_insert)
         conn.commit()
 
-cursor.execute("""
-    UPDATE artists
-    SET 
-        num_songs = (
-            SELECT COUNT(*) FROM songs WHERE songs.artist_id = artists.id
-        ),
-        first_date = (
-            SELECT MIN(date) FROM songs WHERE songs.artist_id = artists.id
-        )
-""")
+
 conn.commit()
 conn.close()
