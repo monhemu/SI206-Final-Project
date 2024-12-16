@@ -23,10 +23,11 @@ song_counts = [row[1] for row in results]
 
 # Create a bar chart
 plt.figure(figsize=(15, 10))
-plt.bar(artist_names, song_counts, color='skyblue')
+plt.bar(artist_names, song_counts, color='skyblue', width=0.6)
 plt.xlabel("Number of Songs")
 plt.ylabel("Artists")
 plt.title("Number of Songs per Artist")
+plt.xticks(rotation=90)
 plt.gca().invert_yaxis() 
 plt.tight_layout()
 
