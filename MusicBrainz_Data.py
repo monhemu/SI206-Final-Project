@@ -79,7 +79,6 @@ def create_countries_table(cur, conn):
 
     cur.execute('SELECT DISTINCT country FROM Artists')
     country_list = [row[0] for row in cur.fetchall()]  # Convert list of tuples to a list of strings
-    print(country_list)
 
     for country in country_list:
         cur.execute('''INSERT INTO countries (name) VALUES (?)''', (country,))
@@ -115,7 +114,7 @@ def main():
 
     #correct_artist_ids(cur, conn)
 
-    create_countries_table(cur, conn)
+    #create_countries_table(cur, conn)
 
     # Close the database connection
     conn.close()
