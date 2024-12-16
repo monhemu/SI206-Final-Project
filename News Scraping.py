@@ -18,7 +18,7 @@ def create_news_dict(artist_name):
     conn = http.client.HTTPConnection('api.mediastack.com')
     params = urllib.parse.urlencode({
         'access_key': ACCESS_KEY,
-        'categories': 'general, entertainment',
+        'categories': 'general, entertainment, -sports',
         'countries': 'us',
         'keywords': artist_name,
         'limit': 25,
