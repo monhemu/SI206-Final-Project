@@ -12,17 +12,25 @@ dates = [20240906, 20240913, 20240920, 20240927, 20241004, 20241011,
 conn = sqlite3.connect('main.db')
 cursor = conn.cursor()
 
-#cursor.execute("DROP TABLE songs")
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS artists (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE
+    )
+""")
+
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS songs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        artist TEXT NOT NULL,
+        artist_id INTEGER NOT NULL,
         song TEXT NOT NULL UNIQUE,
         date TEXT NOT NULL,
-        weeks_on_list INTEGER DEFAULT 1
+        weeks_on_list INTEGER DEFAULT 1,
+        FOREIGN KEY (artist_id) REFERENCES artists (id)
     )
 """)
 conn.commit()
+
 i = 0
 try:
     for date in dates:
@@ -47,7 +55,21 @@ try:
                     artist = re.split(r"[,&]", artists.strip())[0].strip()
                 else:
                     artist, song = artist_and_title, ""
-                    
+
+                cursor.execute("""
+                    SELECT id FROM artists WHERE name = ?
+                """, (artist,))
+                artist_id = cursor.fetchone()
+
+                if not artist_id:
+                    cursor.execute("""
+                        INSERT INTO artists (name) VALUES (?)
+                    """, (artist,))
+                    conn.commit()
+                    artist_id = cursor.lastrowid
+                else:
+                    artist_id = artist_id[0]
+
                 cursor.execute("""
                     SELECT id, date, weeks_on_list FROM songs WHERE song = ?
                 """, (song,))
@@ -55,7 +77,6 @@ try:
 
                 if existing_song:
                     song_id, last_date, weeks_on_list = existing_song
-                    # Update only if the current date is newer than the last recorded date
                     if last_date < str(date):
                         cursor.execute("""
                             UPDATE songs
@@ -66,17 +87,14 @@ try:
                     else:
                         print(f"Skipped duplicate date for: {artist} - {song}")
                 else:
-                    # Add a new song to the insertion list
-                    songs_to_insert.append((artist, song, str(date), 1))
+                    songs_to_insert.append((artist_id, song, str(date), 1))
                     i += 1
                     print(f"{i}. Added song: {artist} - {song}")
 
-            # Insert new songs into the database
             cursor.executemany("""
-                INSERT OR IGNORE INTO songs (artist, song, date, weeks_on_list)
+                INSERT OR IGNORE INTO songs (artist_id, song, date, weeks_on_list)
                 VALUES (?, ?, ?, ?)
             """, songs_to_insert)
             conn.commit()
 finally:
     conn.close()
-
