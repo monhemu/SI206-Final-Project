@@ -5,32 +5,32 @@ Artist: blink-182
                  Average # of Articles Published in September: 1.75
                  Average # of Articles Published in October: 2.0
                  Average # of Articles Published in November: 1.0
-                 Average # of Articles Published in December: 0.25
+                 Average # of Articles Published in December: 0.5
 
 Artist: Lady Gaga
 
                  Average # of Articles Published in September: 3.0
                  Average # of Articles Published in October: 4.5
-                 Average # of Articles Published in November: 1.0
-                 Average # of Articles Published in December: 1.25
+                 Average # of Articles Published in November: 1.25
+                 Average # of Articles Published in December: 0.5
 
 Artist: Eminem
 
-                 Average # of Articles Published in September: 5.25
-                 Average # of Articles Published in October: 5.0
-                 Average # of Articles Published in November: 1.75
-                 Average # of Articles Published in December: 1.25
+                 Average # of Articles Published in September: 4.75
+                 Average # of Articles Published in October: 5.5
+                 Average # of Articles Published in November: 2.0
+                 Average # of Articles Published in December: 1.5
 
 Artist: LINKIN PARK
 
                  Average # of Articles Published in September: 8.0
-                 Average # of Articles Published in October: 5.75
-                 Average # of Articles Published in November: 2.75
-                 Average # of Articles Published in December: 1.75
+                 Average # of Articles Published in October: 6.25
+                 Average # of Articles Published in November: 2.25
+                 Average # of Articles Published in December: 1.5
 
 Artist: Teddy Swims
 
-                 Average # of Articles Published in September: 8.5
-                 Average # of Articles Published in October: 5.75
-                 Average # of Articles Published in November: 3.25
+                 Average # of Articles Published in September: 9.25
+                 Average # of Articles Published in October: 6.75
+                 Average # of Articles Published in November: 3.75
                  Average # of Articles Published in December: 2.25
