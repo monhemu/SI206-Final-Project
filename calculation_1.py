@@ -23,23 +23,3 @@ with open('average_weeks_by_nationality.txt', 'w', encoding='utf-8') as f:
             print("hi")
         else:
             f.write(f"{country_name}: {avg_weeks:.2f} weeks\n")
-
-countries = []
-avg_weeks = []
-
-for row in rows:
-    country_name, avg_weeks_value = row
-    if country_name != "Unknown":
-        countries.append(country_name)
-        avg_weeks.append(avg_weeks_value)
-
-plt.figure(figsize=(12, 8))
-plt.bar(countries, avg_weeks, color='Goldenrod')
-
-plt.xlabel('Country', fontsize=12)
-plt.ylabel('Average Weeks on Chart', fontsize=12)
-plt.title('Average Weeks on Chart by Nationality', fontsize=14)
-plt.xticks(rotation=90)
-
-plt.tight_layout()
-plt.show()

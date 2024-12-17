@@ -61,8 +61,6 @@ pass
 def main():
     curr, conn = set_up_database('main.db')
 
-    #curr.execute('''DROP TABLE News''')
-
     curr.execute('''SELECT artists.name, COUNT(songs.id) as song_count
                     FROM artists
                     JOIN songs ON artists.id = songs.artist_id

@@ -3,30 +3,33 @@ import matplotlib.pyplot as plt
 
 conn = sqlite3.connect("main.db")
 cur = conn.cursor()
-cur.execute("SELECT song, weeks_on_list FROM songs ORDER BY weeks_on_list DESC")
-data = cur.fetchall()
-conn.close()
 
-songs_worth_graphing = []
-for song, weeks in data:
-    if weeks >= 2:
-        song_tup = (song, weeks)
-        songs_worth_graphing.append(song_tup)
+cur.execute("""
+    SELECT countries.name AS country_name, AVG(songs.weeks_on_list) AS avg_weeks
+    FROM songs
+    JOIN artists ON songs.artist_id = artists.id
+    JOIN countries ON artists.country_id = countries.id
+    GROUP BY countries.id
+    ORDER BY avg_weeks DESC
+""")
+rows = cur.fetchall()
 
-sorted_songs = sorted(songs_worth_graphing, key=lambda x: x[0], reverse=True)
-sorted_weeks = sorted(songs_worth_graphing, key=lambda x: x[1], reverse=True)
+countries = []
+avg_weeks = []
 
-songs = [song for song, _ in sorted_songs]
-weeks = [weeks for _, weeks in sorted_weeks]
+for row in rows:
+    country_name, avg_weeks_value = row
+    if country_name != "Unknown":
+        countries.append(country_name)
+        avg_weeks.append(avg_weeks_value)
 
-plt.figure(figsize=(10, 8))
-plt.bar(songs, weeks)
+plt.figure(figsize=(12, 8))
+plt.bar(countries, avg_weeks, color='Goldenrod')
 
-plt.xlabel("Song Names", fontsize=12)
-plt.ylabel("Weeks on List", fontsize=12)
-plt.title("Number of Weeks Songs Stayed on the Top Songs List", fontsize=12)
+plt.xlabel('Country', fontsize=12)
+plt.ylabel('Average Weeks on Chart', fontsize=12)
+plt.title('Average Weeks on Chart by Nationality', fontsize=14)
+plt.xticks(rotation=90)
 
-plt.xticks(rotation=90, fontsize=5)
-
-plt.savefig("song_weeks.png")
+plt.tight_layout()
 plt.show()
