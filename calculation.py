@@ -59,7 +59,7 @@ cur.execute('''SELECT artists.name, songs.artist_id, COUNT(songs.id) as song_cou
                     WHERE country_id = ?
                     GROUP BY artists.name
                     ORDER BY song_count DESC
-                    LIMIT 10''',
+                    LIMIT 5''',
                     (1,))
 
 top_5_artists = cur.fetchall()
@@ -114,8 +114,8 @@ for artist_news in news_dict:
                  Average # of Articles Published in November: {nov_count/4}
                  Average # of Articles Published in December: {dec_count/4}\n''')
     
-    with open('Average # of Articles Published per Month for Top 10 US Artists.txt', 'w', encoding='utf-8') as f:
-        f.write("Average # of Articles Published per Month for Top 10 US Artists\n")
+    with open('Average # of Articles Published per Month for Top 5 US Artists.txt', 'w', encoding='utf-8') as f:
+        f.write("Average # of Articles Published per Month for Top 5 US Artists\n")
         for line in lines:
              f.write(line)
 conn.close()
