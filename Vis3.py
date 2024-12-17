@@ -76,40 +76,6 @@ plt.legend(legend)
 
 
 plt.show()
-
-
-
-
-cur.execute("""
-    SELECT countries.name, COUNT(songs.id) as song_count
-    FROM countries
-    JOIN Artists ON countries.id = Artists.country_id
-    JOIN songs ON Artists.id = songs.artist_id
-    GROUP BY countries.name
-    ORDER BY song_count DESC
-""")
-
-# Fetch results
-results = cur.fetchall()
-#rint(results)
-song_total = 0
-
-for tup in results:
-    if tup[0] == 'Unknown' or tup[0] == 'US':
-        results.remove(tup)
-
-#song_total += tup[1]
-
-country, size = zip(*results)
-country = list(country)
-size = list(size)
-
-#print(country)
-#print(size)
-
-#print(song_total)
-
-
 conn.close()
 
 pass
