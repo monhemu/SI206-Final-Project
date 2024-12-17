@@ -17,7 +17,6 @@ cur.execute("""
 
 # Fetch results
 results = cur.fetchall()
-print(results)
 
 conn.close()
 
