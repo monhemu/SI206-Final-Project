@@ -20,7 +20,6 @@ cur.execute('''SELECT artists.name, songs.artist_id, COUNT(songs.id) as song_cou
 top_5_artists = cur.fetchall()
 artist_dict = {}
 for artist in top_5_artists:
-    print(artist)
     artist_dict[artist[0]] = {}
     cur.execute('''SELECT date FROM songs
                     WHERE artist_id = ?''',
@@ -34,6 +33,7 @@ for artist in top_5_artists:
             artist_dict[artist[0]][int_date] += 1
 
 #get data for artist news
+
 i = 0
 
 news_dict = {}
@@ -52,7 +52,7 @@ for artist in top_5_artists:
                 news_dict[artist[0]][date] += 1
 
 plt.figure(figsize=(30, 5))
-plt.xlabel('Dates')
+plt.xlabel('Dates (950 = September 5th)')
 plt.ylabel('Number of appearances')
 plt.title('Number of Articles Written About Artist vs. Charted Songs')
 #create plot
@@ -76,40 +76,6 @@ plt.legend(legend)
 
 
 plt.show()
-
-
-
-
-cur.execute("""
-    SELECT countries.name, COUNT(songs.id) as song_count
-    FROM countries
-    JOIN Artists ON countries.id = Artists.country_id
-    JOIN songs ON Artists.id = songs.artist_id
-    GROUP BY countries.name
-    ORDER BY song_count DESC
-""")
-
-# Fetch results
-results = cur.fetchall()
-#rint(results)
-song_total = 0
-
-for tup in results:
-    if tup[0] == 'Unknown' or tup[0] == 'US':
-        results.remove(tup)
-
-#song_total += tup[1]
-
-country, size = zip(*results)
-country = list(country)
-size = list(size)
-
-#print(country)
-#print(size)
-
-#print(song_total)
-
-
 conn.close()
 
 pass
