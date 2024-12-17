@@ -20,7 +20,6 @@ cur.execute('''SELECT artists.name, songs.artist_id, COUNT(songs.id) as song_cou
 top_5_artists = cur.fetchall()
 artist_dict = {}
 for artist in top_5_artists:
-    #print(artist)
     artist_dict[artist[0]] = {}
     cur.execute('''SELECT date FROM songs
                     WHERE artist_id = ?''',
@@ -34,6 +33,7 @@ for artist in top_5_artists:
             artist_dict[artist[0]][int_date] += 1
 
 #get data for artist news
+
 i = 0
 
 news_dict = {}
@@ -52,7 +52,7 @@ for artist in top_5_artists:
                 news_dict[artist[0]][date] += 1
 
 plt.figure(figsize=(30, 5))
-plt.xlabel('Dates')
+plt.xlabel('Dates (950 = September 5th)')
 plt.ylabel('Number of appearances')
 plt.title('Number of Articles Written About Artist vs. Charted Songs')
 #create plot

@@ -1,0 +1,71 @@
+Average # of Articles Published per Month for Top 10 US Artists
+
+Artist: blink-182
+
+                 Average # of Articles Published in September: 1.75
+                 Average # of Articles Published in October: 2.0
+                 Average # of Articles Published in November: 1.0
+                 Average # of Articles Published in December: 0.25
+
+Artist: Lady Gaga
+
+                 Average # of Articles Published in September: 3.0
+                 Average # of Articles Published in October: 4.5
+                 Average # of Articles Published in November: 1.0
+                 Average # of Articles Published in December: 1.25
+
+Artist: Eminem
+
+                 Average # of Articles Published in September: 5.25
+                 Average # of Articles Published in October: 5.0
+                 Average # of Articles Published in November: 1.75
+                 Average # of Articles Published in December: 1.25
+
+Artist: LINKIN PARK
+
+                 Average # of Articles Published in September: 8.0
+                 Average # of Articles Published in October: 5.75
+                 Average # of Articles Published in November: 2.75
+                 Average # of Articles Published in December: 1.75
+
+Artist: Teddy Swims
+
+                 Average # of Articles Published in September: 8.5
+                 Average # of Articles Published in October: 5.75
+                 Average # of Articles Published in November: 3.25
+                 Average # of Articles Published in December: 2.25
+
+Artist: Sabrina Carpenter
+
+                 Average # of Articles Published in September: 8.5
+                 Average # of Articles Published in October: 5.75
+                 Average # of Articles Published in November: 3.25
+                 Average # of Articles Published in December: 2.25
+
+Artist: Megan Thee Stallion
+
+                 Average # of Articles Published in September: 8.5
+                 Average # of Articles Published in October: 5.75
+                 Average # of Articles Published in November: 3.25
+                 Average # of Articles Published in December: 2.25
+
+Artist: Max McNown
+
+                 Average # of Articles Published in September: 8.5
+                 Average # of Articles Published in October: 5.75
+                 Average # of Articles Published in November: 3.25
+                 Average # of Articles Published in December: 2.25
+
+Artist: Chappell Roan
+
+                 Average # of Articles Published in September: 8.5
+                 Average # of Articles Published in October: 5.75
+                 Average # of Articles Published in November: 3.25
+                 Average # of Articles Published in December: 2.25
+
+Artist: Billie Eilish
+
+                 Average # of Articles Published in September: 8.5
+                 Average # of Articles Published in October: 5.75
+                 Average # of Articles Published in November: 3.25
+                 Average # of Articles Published in December: 2.25

@@ -82,11 +82,8 @@ def main():
     
     conn.commit()
 
-    print(artist_list)
-
     curr.execute('''SELECT COUNT(*) FROM News''')
     news_list = curr.fetchall()
-    print(news_list)
 
     if news_list[0][0] == 0:
         artist = artist_list[0]
