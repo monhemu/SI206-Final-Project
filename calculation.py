@@ -42,7 +42,7 @@ for i in range(len(countries_list)):
     lines.append(f"\n")
     lines.append(f"Top Artists from {countries_list[i][0]}\n")
     for artist in top_10_artists:
-        lines.append(f"{num}: {artist[0]}, number of songs: {artist[1]}\n")
+        lines.append(f"{num}: {artist[0]}, number of songs on charts: {artist[1]}\n")
         num += 1
     if num == 10:
          num = 1

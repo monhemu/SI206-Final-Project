@@ -1,96 +1,96 @@
 Top Artists by Country
 
 Top Artists from US
-1: blink-182, number of songs: 6
-2: Lady Gaga, number of songs: 5
-3: Eminem, number of songs: 5
-4: LINKIN PARK, number of songs: 4
-5: Teddy Swims, number of songs: 3
-6: Sabrina Carpenter, number of songs: 3
-7: Megan Thee Stallion, number of songs: 2
-8: Max McNown, number of songs: 2
-9: Chappell Roan, number of songs: 2
-10: Billie Eilish, number of songs: 2
+1: blink-182, number of songs on charts: 6
+2: Lady Gaga, number of songs on charts: 5
+3: Eminem, number of songs on charts: 5
+4: LINKIN PARK, number of songs on charts: 4
+5: Teddy Swims, number of songs on charts: 3
+6: Sabrina Carpenter, number of songs on charts: 3
+7: Megan Thee Stallion, number of songs on charts: 2
+8: Max McNown, number of songs on charts: 2
+9: Chappell Roan, number of songs on charts: 2
+10: Billie Eilish, number of songs on charts: 2
 
 Top Artists from KR
-1: j-hope, number of songs: 1
-2: YUTA, number of songs: 1
-3: YEONJUN, number of songs: 1
-4: XG, number of songs: 1
-5: TZUYU, number of songs: 1
-6: Stray Kids, number of songs: 1
-7: ROSÉ, number of songs: 1
-8: MEOVV, number of songs: 1
-9: Jimin, number of songs: 1
-10: JENNIE, number of songs: 1
+1: j-hope, number of songs on charts: 1
+2: YUTA, number of songs on charts: 1
+3: YEONJUN, number of songs on charts: 1
+4: XG, number of songs on charts: 1
+5: TZUYU, number of songs on charts: 1
+6: Stray Kids, number of songs on charts: 1
+7: ROSÉ, number of songs on charts: 1
+8: MEOVV, number of songs on charts: 1
+9: Jimin, number of songs on charts: 1
+10: JENNIE, number of songs on charts: 1
 
 Top Artists from GB
-1: Coldplay, number of songs: 4
-2: The Cure, number of songs: 2
-3: Tears for Fears, number of songs: 2
-4: Perrie, number of songs: 2
-5: Duran Duran, number of songs: 2
-6: Sophie Ellis-Bextor, number of songs: 1
+1: Coldplay, number of songs on charts: 4
+2: The Cure, number of songs on charts: 2
+3: Tears for Fears, number of songs on charts: 2
+4: Perrie, number of songs on charts: 2
+5: Duran Duran, number of songs on charts: 2
+6: Sophie Ellis-Bextor, number of songs on charts: 1
 
 Top Artists from IE
-1: U2, number of songs: 1
-2: Hozier, number of songs: 1
+1: U2, number of songs on charts: 1
+2: Hozier, number of songs on charts: 1
 
 Top Artists from Unknown
-1: JIN, number of songs: 8
-2: One Direction, number of songs: 3
-3: Rag'n'Bone Man, number of songs: 2
-4: Myles Smith, number of songs: 2
-5: Liam Payne, number of songs: 2
-6: Charli xcx, number of songs: 2
-7: Kathryn Hahn, number of songs: 1
-8: Juanjo Bona, number of songs: 1
-9: Jelly Roll, number of songs: 1
-10: FKA twigs, number of songs: 1
+1: JIN, number of songs on charts: 8
+2: One Direction, number of songs on charts: 3
+3: Rag'n'Bone Man, number of songs on charts: 2
+4: Myles Smith, number of songs on charts: 2
+5: Liam Payne, number of songs on charts: 2
+6: Charli xcx, number of songs on charts: 2
+7: Kathryn Hahn, number of songs on charts: 1
+8: Juanjo Bona, number of songs on charts: 1
+9: Jelly Roll, number of songs on charts: 1
+10: FKA twigs, number of songs on charts: 1
 
 Top Artists from CO
-1: KAROL G, number of songs: 2
-2: Shakira, number of songs: 1
+1: KAROL G, number of songs on charts: 2
+2: Shakira, number of songs on charts: 1
 
 Top Artists from IN
-1: Hanumankind, number of songs: 1
+1: Hanumankind, number of songs on charts: 1
 
 Top Artists from FR
-1: David Guetta, number of songs: 2
-2: Kavinsky, number of songs: 1
-3: HUGEL, number of songs: 1
+1: David Guetta, number of songs on charts: 2
+2: Kavinsky, number of songs on charts: 1
+3: HUGEL, number of songs on charts: 1
 
 Top Artists from NL
-1: Sevdaliza, number of songs: 1
-2: Bassjackers, number of songs: 1
+1: Sevdaliza, number of songs on charts: 1
+2: Bassjackers, number of songs on charts: 1
 
 Top Artists from CA
-1: The Weeknd, number of songs: 3
-2: Tom MacDonald, number of songs: 1
-3: Tate McRae, number of songs: 1
-4: Shawn Mendes, number of songs: 1
-5: Céline Dion, number of songs: 1
+1: The Weeknd, number of songs on charts: 3
+2: Tom MacDonald, number of songs on charts: 1
+3: Tate McRae, number of songs on charts: 1
+4: Shawn Mendes, number of songs on charts: 1
+5: Céline Dion, number of songs on charts: 1
 
 Top Artists from BE
-1: Lost Frequencies, number of songs: 1
+1: Lost Frequencies, number of songs on charts: 1
 
 Top Artists from AU
-1: The Veronicas, number of songs: 1
-2: Kylie Minogue, number of songs: 1
+1: The Veronicas, number of songs on charts: 1
+2: Kylie Minogue, number of songs on charts: 1
 
 Top Artists from NO
-1: Kygo, number of songs: 1
+1: Kygo, number of songs on charts: 1
 
 Top Artists from IT
-1: Damiano David, number of songs: 2
-2: Andrea Bocelli, number of songs: 1
+1: Damiano David, number of songs on charts: 2
+2: Andrea Bocelli, number of songs on charts: 1
 
 Top Artists from JP
-1: LISA, number of songs: 1
-2: Creepy Nuts, number of songs: 1
+1: LISA, number of songs on charts: 1
+2: Creepy Nuts, number of songs on charts: 1
 
 Top Artists from DE
-1: Milli Vanilli, number of songs: 1
+1: Milli Vanilli, number of songs on charts: 1
 
 Top Artists from SE
-1: Loreen, number of songs: 1
+1: Loreen, number of songs on charts: 1
