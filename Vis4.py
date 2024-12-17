@@ -34,11 +34,19 @@ country.remove('Unknown')
 counts = counts[2:]
 
 total = sum(counts)
-sizes = []
+labels, sizes = [], []
 
 for num in counts:
-    sizes.append(num/(total))
+    percent = num*100/(total)
+    sizes.append(percent)
 
-ax.pie(sizes, labels=country)
+for size in sizes:
+    label = f"{size:.1f}%"
+    labels.append(label)
+
+ax.pie(sizes, labels=labels)
 ax.set_title('Country Representation by Artist (No US, Unknown)')
+ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', labels=country)
 plt.show()
+
+
