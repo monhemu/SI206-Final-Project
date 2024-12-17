@@ -28,7 +28,9 @@ for artist in top_5_artists:
             artist_dict[artist[0]][int_date] = 1
         else:
             artist_dict[artist[0]][int_date] += 1
+            
 i = 0
+
 news_dict = {}
 for artist in top_5_artists:
     cur.execute('''SELECT date FROM News
