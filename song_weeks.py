@@ -19,15 +19,14 @@ sorted_weeks = sorted(songs_worth_graphing, key=lambda x: x[1], reverse=True)
 songs = [song for song, _ in sorted_songs]
 weeks = [weeks for _, weeks in sorted_weeks]
 
-plt.figure(figsize=(12, 8))
-plt.bar(songs, weeks, color="skyblue")
+plt.figure(figsize=(10, 8))
+plt.bar(songs, weeks)
 
 plt.xlabel("Song Names", fontsize=12)
 plt.ylabel("Weeks on List", fontsize=12)
-plt.title("Number of Weeks Songs Stayed on the Top Songs List", fontsize=16)
+plt.title("Number of Weeks Songs Stayed on the Top Songs List", fontsize=12)
 
-plt.xticks(rotation=90, fontsize=10)
-plt.tight_layout()
+plt.xticks(rotation=90, fontsize=5)
 
 plt.savefig("song_weeks.png")
 plt.show()
